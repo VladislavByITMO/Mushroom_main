@@ -1,0 +1,134 @@
+//#define TEST_SONAR
+//#define TEST_SERVO
+//#define TEST_MQ-135
+//#define TEST_CJMCU-1100
+//#define TEST_MLX90614ESF
+//#define TEST_INA219
+//#define TEST_INA219_A1
+//#define TEST_MOTOR_R
+//#define TEST_MOTOR_L
+//#define TEST_COLLER
+//#define TEST_RLB_DAMPER
+//#define TEST_GYRO
+//#define TEST_NASOS
+
+#ifdef TEST_SONAR
+  Serial.print("Расстояние с SonarR = ");
+  Serial.print(sonarR.ping_cm());
+  Serial.print("cm\tРасстояние с SonarL = ");
+  Serial.print(sonarL.ping_cm());
+  Serial.println("cm");
+#endif
+
+#ifdef TEST_SERVO
+  gpio.servoWrite(0, 170);
+  gpio.servoWrite(1, 100);
+  delay(500);
+  gpio.servoWrite(0,  10);
+  gpio.servoWrite(1,  10);
+  delay(500);
+#endif
+
+#ifdef TEST_MQ-135
+  Serial.print("Уровернь газа на MQ-135 = ");
+  Serial.println(map(gpio.analogRead(4), 0, 4095, 0, 500));
+#endif
+
+#ifdef TEST_CJMCU-1100
+  Serial.print("Уровернь газа на CJMCU-1100 = ");
+  Serial.println(map(gpio.analogRead(5), 0, 4095, 0, 500));
+#endif
+
+#ifdef TEST_MLX90614ESF
+  Serial.print("Температура фона на MLX90614ESF: ");
+  Serial.print(mlx.readAmbientTempC());
+  Serial.print("*C\nТемпература объекта на MLX90614ESF: ");
+  Serial.print(mlx.readObjectTempC());
+  Serial.println("*C");
+#endif
+
+#ifdef TEST_INA219
+  Serial.print("Показания с INA219:\n");
+  Serial.print("Bus Voltage:   "); Serial.print(ina219.getBusVoltage_V()); Serial.println(" V");
+  Serial.print("Shunt Voltage: "); Serial.print(ina219.getShuntVoltage_mV()); Serial.println(" mV");
+  Serial.print("Load Voltage:  "); Serial.print(ina219.getBusVoltage_V() + (ina219.getShuntVoltage_mV() / 1000)); Serial.println(" V");
+  Serial.print("Current:       "); Serial.print(ina219.getCurrent_mA()); Serial.println(" mA");
+  Serial.print("Power:         "); Serial.print(ina219.getPower_mW()); Serial.println(" mW\n");
+#endif
+
+#ifdef TEST_INA219_A1
+  Serial.print("Показания с INA219 с перемычкой на A1:\n");
+  Serial.print("Bus Voltage:   "); Serial.print(ina219_A1.getBusVoltage_V()); Serial.println(" V");
+  Serial.print("Shunt Voltage: "); Serial.print(ina219_A1.getShuntVoltage_mV()); Serial.println(" mV");
+  Serial.print("Load Voltage:  "); Serial.print(ina219_A1.getBusVoltage_V() + (ina219_A1.getShuntVoltage_mV() / 1000)); Serial.println(" V");
+  Serial.print("Current:       "); Serial.print(ina219_A1.getCurrent_mA()); Serial.println(" mA");
+  Serial.print("Power:         "); Serial.print(ina219_A1.getPower_mW()); Serial.println(" mW\n");
+#endif
+
+#ifdef TEST_MOTOR_L
+  truck.m(255, 0);
+  delay(2000);
+  truck.stop();
+  delay(500);
+  truck.m(-255, 0);
+  delay(2000);
+  truck.stop();
+  delay(500);
+#endif
+
+#ifdef TEST_MOTOR_R
+  truck.m(0, 255);
+  delay(2000);
+  truck.stop();
+  delay(500);
+  truck.m(0, -255);
+  delay(2000);
+  truck.stop();
+  delay(500);
+#endif
+
+#ifdef TEST_COLLER
+  digitalWrite(COL, HIGH);
+  delay(1000);
+  digitalWrite(COL, LOW);
+  delay(1000);
+#endif
+
+#ifdef TEST_RLB_DAMPER
+  Serial.print("R: ");
+  Serial.print(digitalRead(IKR));
+  Serial.print("\tL: ");
+  Serial.print(digitalRead(IKL));
+  Serial.print("\tB: ");
+  Serial.println(digitalRead(IKB));
+#endif
+
+#ifdef TEST_BUTTON
+  Serial.print("Button: ");
+  Serial.println(digitalRead(BUTTON));
+#endif
+
+#ifdef TEST_GYRO
+  Serial.println("Тест модуля ...");
+  switch (gyro.test()) { 
+    case 0:          Serial.println("Аппаратное самотестирование всех датчиков успешно пройдено!"); break;
+    case BMA_ERR_ID: Serial.println("Акселерометр не найден.");                                     break;
+    case BMG_ERR_ID: Serial.println("Гироскоп не найден.");                                         break;
+    case BMM_ERR_ID: Serial.println("Магнитометр не найден.");                                      break;
+    case BMA_ERR_ST: Serial.println("Акселерометр не прошел самотестирование.");                    break;
+    case BMG_ERR_ST: Serial.println("Гироскоп не прошел самотестирование.");                        break;
+    case BMM_ERR_ST: Serial.println("Магнитометр не прошел самотестирование.");                     break;
+    default:         Serial.println("Модуль не прошел самотестирование по неизвестной причине.");   break;
+  }
+#endif
+
+#ifdef TEST_NASOS
+  nasos.mF(255);
+  delay(2000);
+  nasos.stop();
+  delay(500);
+  nasos.mB(255);
+  delay(2000);
+  nasos.mF(255);
+  delay(500);
+#endif
