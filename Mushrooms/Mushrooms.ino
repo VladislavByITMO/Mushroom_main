@@ -103,7 +103,7 @@ void loop() {
     vel = 0;
     wel = 0;
 
-    if (Mirf.dataReady()) { //проверка радио, сообщение: 4 байта - буква, число, число, число
+    if (!Mirf.isSending() && Mirf.dataReady()) { //проверка радио, сообщение: 4 байта - буква, число, число, число
       int number = 0;
       byte *temp = data + 1;
       data[0] = data[1] = data[2] = data[3] = 0;
@@ -234,8 +234,10 @@ void loop() {
               if (SR < 50 || SL < 50) {
                 flag_manyK = 1;
               } else if (SR < 20 || SL < 20) {
-                //тут нужно послать сигнал о стыковке всем роботам
-
+                data[0] = 's';  //команда по радио об остановке (в теории)
+                data[1] = data[2] = data[3] = 0;
+                Mirf.send(data);
+                
                 if (flag_Timer) {
                   moveRoundTimer = millis();
                   flag_Timer = false;
